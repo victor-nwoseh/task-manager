@@ -1,0 +1,120 @@
+.task-item {
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.task-item h3 {
+  margin: 0 0 10px 0;
+  color: #333;
+}
+
+.task-item p {
+  margin: 0 0 10px 0;
+  color: #666;
+}
+
+.task-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9em;
+  color: #777;
+}
+
+.status {
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-weight: bold;
+}
+
+.task-item.pending .status {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.task-item.completed .status {
+  background: #d4edda;
+  color: #155724;
+}
+
+.task-actions {
+  margin-top: 10px;
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.task-actions button {
+  padding: 5px 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background: white;
+  cursor: pointer;
+}
+
+.task-actions button:hover {
+  background: #f8f9fa;
+}
+
+.btn-edit,
+.btn-delete {
+  padding: 5px 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.btn-edit {
+  background: white;
+}
+
+.btn-edit:hover {
+  background: #f8f9fa;
+}
+
+.btn-delete {
+  background: white;
+  color: #dc3545;
+  border-color: #dc3545;
+}
+
+.btn-delete:hover {
+  background: #dc3545;
+  color: white;
+}
+
+.task-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.task-header h3 {
+  margin: 0;
+}
+
+.status-toggle {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  padding: 0 5px;
+  color: #666;
+  transition: transform 0.2s;
+}
+
+.status-toggle:hover {
+  transform: scale(1.1);
+}
+
+.status-toggle.completed {
+  color: #28a745;
+}
+
+.status-toggle.pending {
+  color: #ffc107;
+} 
