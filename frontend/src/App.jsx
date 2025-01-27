@@ -116,21 +116,28 @@ function App() {
 
   const handleDeleteTask = async (taskId) => {
     try {
+      const token = localStorage.getItem('token');
       const baseUrl = process.env.NODE_ENV === 'production'
         ? 'https://planit-api-1a8b4a3f0d64.herokuapp.com'
         : 'http://localhost:3000';
+
       const response = await fetch(`${baseUrl}/tasks/${taskId}`, {
         method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
       });
 
       if (!response.ok) {
-        throw new Error('Failed to delete task');
+        const errorData = await response.json();
+        throw new Error(errorData.error?.message || 'Failed to delete task');
       }
 
       // Remove the task from the state
       setTasks(tasks.filter(task => task.id !== taskId));
     } catch (err) {
       setError('Failed to delete task. Please try again later.');
+      console.error('Delete task error:', err);
     }
   };
 
@@ -138,13 +145,16 @@ function App() {
     const newStatus = task.status === 'Pending' ? 'Completed' : 'Pending';
     
     try {
+      const token = localStorage.getItem('token');
       const baseUrl = process.env.NODE_ENV === 'production'
         ? 'https://planit-api-1a8b4a3f0d64.herokuapp.com'
         : 'http://localhost:3000';
+
       const response = await fetch(`${baseUrl}/tasks/${task.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({
           ...task,
@@ -153,7 +163,8 @@ function App() {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to update task status');
+        const errorData = await response.json();
+        throw new Error(errorData.error?.message || 'Failed to update task status');
       }
 
       const updatedTask = await response.json();
@@ -164,6 +175,7 @@ function App() {
       ));
     } catch (err) {
       setError('Failed to update task status. Please try again later.');
+      console.error('Toggle status error:', err);
     }
   };
 

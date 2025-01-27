@@ -46,6 +46,7 @@ function TaskForm({ task, onSubmit, onCancel }) {
     }
 
     try {
+      const token = localStorage.getItem('token');
       const baseUrl = process.env.NODE_ENV === 'production'
         ? 'https://planit-api-1a8b4a3f0d64.herokuapp.com'
         : 'http://localhost:3000';
@@ -60,14 +61,14 @@ function TaskForm({ task, onSubmit, onCancel }) {
         method,
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
+          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify(formData),
       });
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error.message || 'Failed to save task');
+        throw new Error(errorData.error?.message || 'Failed to save task');
       }
 
       const savedTask = await response.json();
