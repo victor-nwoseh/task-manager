@@ -1,13 +1,20 @@
 const { Pool } = require('pg');
 
 // Database configuration
-const pool = new Pool({
-  user: 'postgres',      // default postgres user
-  host: 'localhost',     // database host
-  database: 'task_manager', // database name
-  password: 'victor2005',  // database password
-  port: 5432,           // default postgres port
-});
+const pool = process.env.DATABASE_URL
+  ? new Pool({
+      connectionString: process.env.DATABASE_URL,
+      ssl: {
+        rejectUnauthorized: false
+      }
+    })
+  : new Pool({
+      user: 'postgres',      // default postgres user
+      host: 'localhost',     // database host
+      database: 'task_manager', // database name
+      password: 'victor2005',  // database password
+      port: 5432,           // default postgres port
+    });
 
 // Test the connection
 pool.connect((err, client, release) => {
