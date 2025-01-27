@@ -15,10 +15,13 @@ function App() {
   useEffect(() => {
     const fetchTasks = async () => {
       try {
-        const url = filter === 'all' 
-          ? 'http://localhost:3000/tasks'
-          : `http://localhost:3000/tasks?status=${filter.charAt(0).toUpperCase() + filter.slice(1)}`;
-        
+        const baseUrl = process.env.NODE_ENV === 'production' 
+          ? 'https://planit-api-1a8b4a3f0d64.herokuapp.com'
+          : 'http://localhost:3000';
+          
+        const url = filter === 'all'
+          ? `${baseUrl}/tasks` 
+          : `${baseUrl}/tasks?status=${filter.charAt(0).toUpperCase() + filter.slice(1)}`;
         const response = await fetch(url);
         if (!response.ok) throw new Error('Failed to fetch tasks');
         
@@ -54,7 +57,10 @@ function App() {
 
   const handleDeleteTask = async (taskId) => {
     try {
-      const response = await fetch(`http://localhost:3000/tasks/${taskId}`, {
+      const baseUrl = process.env.NODE_ENV === 'production'
+        ? 'https://planit-api-1a8b4a3f0d64.herokuapp.com'
+        : 'http://localhost:3000';
+      const response = await fetch(`${baseUrl}/tasks/${taskId}`, {
         method: 'DELETE',
       });
 
@@ -73,7 +79,10 @@ function App() {
     const newStatus = task.status === 'Pending' ? 'Completed' : 'Pending';
     
     try {
-      const response = await fetch(`http://localhost:3000/tasks/${task.id}`, {
+      const baseUrl = process.env.NODE_ENV === 'production'
+        ? 'https://planit-api-1a8b4a3f0d64.herokuapp.com'
+        : 'http://localhost:3000';
+      const response = await fetch(`${baseUrl}/tasks/${task.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

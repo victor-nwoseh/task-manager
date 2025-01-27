@@ -9,7 +9,7 @@ app.use(express.json());
 
 // Middleware for handling CORS (if needed for frontend communication)
 app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', 'http://localhost:5173'); // Vite's default port
+  res.header('Access-Control-Allow-Origin', 'https://reliable-gaufre-bd439f.netlify.app');
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
   res.header('Access-Control-Allow-Headers', 'Content-Type');
   next();

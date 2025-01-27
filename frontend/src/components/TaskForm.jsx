@@ -46,9 +46,13 @@ function TaskForm({ task, onSubmit, onCancel }) {
     }
 
     try {
+      const baseUrl = process.env.NODE_ENV === 'production'
+        ? 'https://planit-api-1a8b4a3f0d64.herokuapp.com'
+        : 'http://localhost:3000';
+        
       const url = task 
-        ? `http://localhost:3000/tasks/${task.id}`
-        : 'http://localhost:3000/tasks';
+        ? `${baseUrl}/tasks/${task.id}`
+        : `${baseUrl}/tasks`;
       
       const method = task ? 'PUT' : 'POST';
       
