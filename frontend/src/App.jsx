@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import TaskForm from './components/TaskForm';
 import TaskList from './components/TaskList';
+import Login from './components/Login';
+import Register from './components/Register';
 import './App.css';
 
 function App() {
@@ -10,11 +12,20 @@ function App() {
   const [filter, setFilter] = useState('all');
   const [showForm, setShowForm] = useState(false);
   const [editingTask, setEditingTask] = useState(null);
+  const [user, setUser] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [authMode, setAuthMode] = useState('login');
 
   // Fetch tasks from the backend
   useEffect(() => {
     const fetchTasks = async () => {
       try {
+        const token = localStorage.getItem('token');
+        if (!token) {
+          setUser(null);
+          return;
+        }
+
         const baseUrl = process.env.NODE_ENV === 'production' 
           ? 'https://planit-api-1a8b4a3f0d64.herokuapp.com'
           : 'http://localhost:3000';
@@ -22,8 +33,21 @@ function App() {
         const url = filter === 'all'
           ? `${baseUrl}/tasks` 
           : `${baseUrl}/tasks?status=${filter.charAt(0).toUpperCase() + filter.slice(1)}`;
-        const response = await fetch(url);
-        if (!response.ok) throw new Error('Failed to fetch tasks');
+        
+        const response = await fetch(url, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        
+        if (!response.ok) {
+          if (response.status === 401) {
+            localStorage.removeItem('token');
+            setUser(null);
+            return;
+          }
+          throw new Error('Failed to fetch tasks');
+        }
         
         const data = await response.json();
         setTasks(data.tasks);
@@ -35,8 +59,43 @@ function App() {
       }
     };
 
-    fetchTasks();
-  }, [filter]);
+    if (user) {
+      fetchTasks();
+    }
+  }, [filter, user]);
+
+  // Add this useEffect for checking authentication status
+  useEffect(() => {
+    const checkAuth = async () => {
+      const token = localStorage.getItem('token');
+      if (token) {
+        try {
+          const baseUrl = process.env.NODE_ENV === 'production'
+            ? 'https://planit-api-1a8b4a3f0d64.herokuapp.com'
+            : 'http://localhost:3000';
+          
+          const response = await fetch(`${baseUrl}/auth/verify`, {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            setUser(data.user);
+          } else {
+            localStorage.removeItem('token');
+          }
+        } catch (err) {
+          console.error('Auth check failed:', err);
+          localStorage.removeItem('token');
+        }
+      }
+      setIsLoading(false);
+    };
+
+    checkAuth();
+  }, []);
 
   const handleTaskSubmit = (task) => {
     if (editingTask) {
@@ -108,13 +167,45 @@ function App() {
     }
   };
 
+  // Add this function to handle logout
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    setUser(null);
+  };
+
+  if (isLoading) {
+    return <div className="loading">Loading...</div>;
+  }
+
+  if (!user) {
+    return authMode === 'login' ? (
+      <Login 
+        onLogin={setUser} 
+        onSwitchToRegister={() => setAuthMode('register')} 
+      />
+    ) : (
+      <Register 
+        onRegister={setUser} 
+        onSwitchToLogin={() => setAuthMode('login')} 
+      />
+    );
+  }
+
   if (loading) return <div className="loading">Loading tasks...</div>;
   if (error) return <div className="error">{error}</div>;
 
   return (
     <div className="app">
       <header className="app-header">
-        <h1>Task Manager</h1>
+        <div className="header-content">
+          <h1>Task Manager</h1>
+          <button 
+            className="logout-btn"
+            onClick={handleLogout}
+          >
+            Logout
+          </button>
+        </div>
         <button 
           className="add-task-btn"
           onClick={() => {

@@ -5,37 +5,21 @@ const db = require('../config/database');
 // GET /tasks - Get all tasks
 router.get('/', async (req, res, next) => {
   try {
-    // Get status filter from query params
-    const { status } = req.query;
+    const status = req.query.status;
+    let query = 'SELECT * FROM tasks WHERE user_id = $1';
+    const values = [req.user.id];
     
-    let query = 'SELECT * FROM tasks';
-    let values = [];
-
-    // Add status filter if provided
-    if (status) {
-      if (!['Pending', 'Completed'].includes(status)) {
-        return res.status(400).json({
-          error: {
-            message: "Status must be either 'Pending' or 'Completed'",
-            status: 400
-          }
-        });
-      }
-      query += ' WHERE status = $1';
+    if (status && ['Pending', 'Completed'].includes(status)) {
+      query += ' AND status = $2';
       values.push(status);
     }
-
-    // Add ordering by due date
-    query += ' ORDER BY due_date ASC';
+    
+    query += ' ORDER BY created_at DESC';
     
     const result = await db.query(query, values);
-    
-    res.json({
-      message: "Tasks retrieved successfully",
-      tasks: result.rows
-    });
-  } catch (error) {
-    next(error);
+    res.json({ tasks: result.rows });
+  } catch (err) {
+    next(err);
   }
 });
 
@@ -66,12 +50,12 @@ router.post('/', async (req, res, next) => {
 
     // Insert task into database
     const query = `
-      INSERT INTO tasks (title, description, due_date, status)
-      VALUES ($1, $2, $3, $4)
+      INSERT INTO tasks (title, description, due_date, status, user_id)
+      VALUES ($1, $2, $3, $4, $5)
       RETURNING *
     `;
     
-    const values = [title, description, due_date, status];
+    const values = [title, description, due_date, status, req.user.id];
     const result = await db.query(query, values);
     
     res.status(201).json({
@@ -213,6 +197,47 @@ router.delete('/:id', async (req, res, next) => {
   } catch (error) {
     next(error);
   }
+});
+
+// Update other routes to check task ownership
+const checkTaskOwnership = async (req, res, next) => {
+  try {
+    const result = await db.query(
+      'SELECT user_id FROM tasks WHERE id = $1',
+      [req.params.id]
+    );
+    
+    if (result.rows.length === 0) {
+      return res.status(404).json({
+        error: {
+          message: 'Task not found',
+          status: 404
+        }
+      });
+    }
+    
+    if (result.rows[0].user_id !== req.user.id) {
+      return res.status(403).json({
+        error: {
+          message: 'Not authorized to access this task',
+          status: 403
+        }
+      });
+    }
+    
+    next();
+  } catch (err) {
+    next(err);
+  }
+};
+
+// Add ownership check to PUT and DELETE routes
+router.put('/:id', checkTaskOwnership, async (req, res, next) => {
+  // ... existing code ...
+});
+
+router.delete('/:id', checkTaskOwnership, async (req, res, next) => {
+  // ... existing code ...
 });
 
 module.exports = router; 

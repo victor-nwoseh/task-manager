@@ -60,6 +60,7 @@ function TaskForm({ task, onSubmit, onCancel }) {
         method,
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
         },
         body: JSON.stringify(formData),
       });
