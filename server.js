@@ -7,9 +7,18 @@ const app = express();              // 2. Create an Express app instance
 // Middleware for parsing JSON bodies
 app.use(express.json());
 
-// Middleware for handling CORS (if needed for frontend communication)
+// Middleware for handling CORS
 app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', 'https://nwosehstasks.netlify.app');
+  const allowedOrigins = [
+    'https://nwosehstasks.netlify.app',
+    'http://localhost:5173'  // Add your local frontend development server
+  ];
+  
+  const origin = req.headers.origin;
+  if (allowedOrigins.includes(origin)) {
+    res.header('Access-Control-Allow-Origin', origin);
+  }
+  
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
   res.header('Access-Control-Allow-Headers', 'Content-Type');
   next();
