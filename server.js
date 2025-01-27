@@ -44,7 +44,7 @@ const { auth } = require('./middleware/auth');
 // Rate limiting middleware
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 5, // limit each IP to 5 login attempts per window
+  max: process.env.NODE_ENV === 'production' ? 20 : 100, // 100 attempts in development, 5 in production
   message: {
     error: {
       message: 'Too many login attempts. Please try again later.',
