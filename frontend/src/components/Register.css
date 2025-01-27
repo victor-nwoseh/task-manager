@@ -88,4 +88,29 @@
 
 .switch-button:hover {
   color: #0056b3;
+}
+
+.requirements-toggle {
+  background: none;
+  border: none;
+  color: #007bff;
+  font-size: 0.8em;
+  cursor: pointer;
+  margin-left: 0.5rem;
+  text-decoration: underline;
+}
+
+.requirements-toggle:hover {
+  color: #0056b3;
+}
+
+.password-requirements {
+  font-size: 0.85em;
+  color: #666;
+  margin: 0.5rem 0;
+  padding-left: 1.5rem;
+}
+
+.password-requirements li {
+  margin: 0.25rem 0;
 } 

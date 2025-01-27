@@ -9,6 +9,15 @@ function Register({ onRegister, onSwitchToLogin }) {
   });
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [showRequirements, setShowRequirements] = useState(false);
+
+  const passwordRequirements = [
+    'At least 8 characters long',
+    'At least one uppercase letter',
+    'At least one lowercase letter',
+    'At least one number',
+    'At least one special character (!@#$%^&*(),.?":{}|<>)'
+  ];
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -82,7 +91,23 @@ function Register({ onRegister, onSwitchToLogin }) {
         </div>
 
         <div className="form-group">
-          <label htmlFor="password">Password</label>
+          <label htmlFor="password">
+            Password
+            <button 
+              type="button" 
+              className="requirements-toggle"
+              onClick={() => setShowRequirements(!showRequirements)}
+            >
+              {showRequirements ? 'Hide Requirements' : 'Show Requirements'}
+            </button>
+          </label>
+          {showRequirements && (
+            <ul className="password-requirements">
+              {passwordRequirements.map((req, index) => (
+                <li key={index}>{req}</li>
+              ))}
+            </ul>
+          )}
           <input
             type="password"
             id="password"
