@@ -14,7 +14,7 @@ app.use(express.json());
 // Middleware for handling CORS
 app.use((req, res, next) => {
   const allowedOrigins = [
-    'https://nwosehstasks.netlify.app',
+    'https://personal-task-manager-frontend.onrender.com', // New Render frontend URL
     'http://localhost:5173'
   ];
   

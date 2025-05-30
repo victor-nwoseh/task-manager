@@ -1,6 +1,6 @@
 # Task Manager Application
 
-A full-stack task management application with user authentication. Live app available at [nwosehstasks.netlify.app](https://nwosehstasks.netlify.app/).
+A full-stack task management application with user authentication. Live app available at [personal-task-manager-frontend.onrender.com](https://personal-task-manager-frontend.onrender.com).
 
 ![Task Manager Screenshot](https://github.com/victor-nwoseh/task-manager/blob/main/Task%20Manager%20Screenshot.png)
 
@@ -29,7 +29,7 @@ A full-stack task management application with user authentication. Live app avai
 **Frontend**  
 - React
 - Vite
-- Axios
+- Modern ES6+ JavaScript
 
 **Backend**  
 - Express
@@ -37,5 +37,16 @@ A full-stack task management application with user authentication. Live app avai
 - JSON Web Tokens
 
 **Deployment**  
-- Frontend: Netlify
-- Backend: Heroku
+- Frontend: Render (Static Site)
+- Backend: Render (Web Service)
+- Database: Render (PostgreSQL)
+
+## Migration to Render
+
+This project has been migrated from Netlify/Heroku to Render for unified hosting. The migration includes:
+
+- Database hosted on Render PostgreSQL
+- Backend API hosted on Render Web Service
+- Frontend hosted on Render Static Site
+- Environment-based API configuration
+- Automated deployments via GitHub integration

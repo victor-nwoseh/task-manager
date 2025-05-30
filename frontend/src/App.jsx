@@ -3,6 +3,7 @@ import TaskForm from './components/TaskForm';
 import TaskList from './components/TaskList';
 import Login from './components/Login';
 import Register from './components/Register';
+import { API_BASE_URL, createApiUrl, API_ENDPOINTS } from './config/api';
 import './App.css';
 
 function App() {
@@ -26,13 +27,9 @@ function App() {
           return;
         }
 
-        const baseUrl = process.env.NODE_ENV === 'production' 
-          ? 'https://planit-api-1a8b4a3f0d64.herokuapp.com'
-          : 'http://localhost:3000';
-          
         const url = filter === 'all'
-          ? `${baseUrl}/tasks` 
-          : `${baseUrl}/tasks?status=${filter.charAt(0).toUpperCase() + filter.slice(1)}`;
+          ? createApiUrl(API_ENDPOINTS.TASKS.BASE)
+          : createApiUrl(`${API_ENDPOINTS.TASKS.BASE}?status=${filter.charAt(0).toUpperCase() + filter.slice(1)}`);
         
         const response = await fetch(url, {
           headers: {
@@ -70,11 +67,7 @@ function App() {
       const token = localStorage.getItem('token');
       if (token) {
         try {
-          const baseUrl = process.env.NODE_ENV === 'production'
-            ? 'https://planit-api-1a8b4a3f0d64.herokuapp.com'
-            : 'http://localhost:3000';
-          
-          const response = await fetch(`${baseUrl}/auth/verify`, {
+          const response = await fetch(createApiUrl('/auth/verify'), {
             headers: {
               'Authorization': `Bearer ${token}`
             }
@@ -117,11 +110,8 @@ function App() {
   const handleDeleteTask = async (taskId) => {
     try {
       const token = localStorage.getItem('token');
-      const baseUrl = process.env.NODE_ENV === 'production'
-        ? 'https://planit-api-1a8b4a3f0d64.herokuapp.com'
-        : 'http://localhost:3000';
 
-      const response = await fetch(`${baseUrl}/tasks/${taskId}`, {
+      const response = await fetch(createApiUrl(API_ENDPOINTS.TASKS.BY_ID(taskId)), {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -146,11 +136,8 @@ function App() {
     
     try {
       const token = localStorage.getItem('token');
-      const baseUrl = process.env.NODE_ENV === 'production'
-        ? 'https://planit-api-1a8b4a3f0d64.herokuapp.com'
-        : 'http://localhost:3000';
 
-      const response = await fetch(`${baseUrl}/tasks/${task.id}`, {
+      const response = await fetch(createApiUrl(API_ENDPOINTS.TASKS.BY_ID(task.id)), {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

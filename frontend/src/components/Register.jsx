@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { createApiUrl, API_ENDPOINTS } from '../config/api';
 import './Register.css';
 
 function Register({ onRegister, onSwitchToLogin }) {
@@ -40,11 +41,7 @@ function Register({ onRegister, onSwitchToLogin }) {
     setIsLoading(true);
 
     try {
-      const baseUrl = process.env.NODE_ENV === 'production'
-        ? 'https://planit-api-1a8b4a3f0d64.herokuapp.com'
-        : 'http://localhost:3000';
-
-      const response = await fetch(`${baseUrl}/auth/register`, {
+      const response = await fetch(createApiUrl(API_ENDPOINTS.AUTH.REGISTER), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

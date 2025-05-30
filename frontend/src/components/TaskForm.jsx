@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { createApiUrl, API_ENDPOINTS } from '../config/api';
 import './TaskForm.css';
 
 function TaskForm({ task, onSubmit, onCancel }) {
@@ -47,13 +48,10 @@ function TaskForm({ task, onSubmit, onCancel }) {
 
     try {
       const token = localStorage.getItem('token');
-      const baseUrl = process.env.NODE_ENV === 'production'
-        ? 'https://planit-api-1a8b4a3f0d64.herokuapp.com'
-        : 'http://localhost:3000';
         
       const url = task 
-        ? `${baseUrl}/tasks/${task.id}`
-        : `${baseUrl}/tasks`;
+        ? createApiUrl(API_ENDPOINTS.TASKS.BY_ID(task.id))
+        : createApiUrl(API_ENDPOINTS.TASKS.BASE);
       
       const method = task ? 'PUT' : 'POST';
       
