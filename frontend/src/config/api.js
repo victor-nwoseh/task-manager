@@ -1,7 +1,7 @@
 // API configuration for different environments
 const API_CONFIG = {
   development: 'http://localhost:3000',
-  production: 'https://personal-task-manager-backend-bikg.onrender.com' // This will be your Render backend URL
+  production: 'https://personal-task-manager-backend-bikg.onrender.com' // Updated with actual Render backend URL
 };
 
 // Get the current environment

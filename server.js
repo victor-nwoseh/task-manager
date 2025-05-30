@@ -14,12 +14,26 @@ app.use(express.json());
 // Middleware for handling CORS
 app.use((req, res, next) => {
   const allowedOrigins = [
-    'https://personal-task-manager-frontend.onrender.com', // New Render frontend URL
+    'https://personal-task-manager-frontend.onrender.com', // Updated Render frontend URL
+    'https://personal-task-manager-frontend-bikg.onrender.com', // Alternative pattern
+    /^https:\/\/personal-task-manager-frontend.*\.onrender\.com$/, // Pattern for any Render frontend URL
     'http://localhost:5173'
   ];
   
   const origin = req.headers.origin;
-  if (allowedOrigins.includes(origin)) {
+  console.log('Request origin:', origin); // Debug logging
+  
+  // Check if origin matches any allowed origins (including regex patterns)
+  const isAllowed = allowedOrigins.some(allowedOrigin => {
+    if (typeof allowedOrigin === 'string') {
+      return allowedOrigin === origin;
+    } else if (allowedOrigin instanceof RegExp) {
+      return allowedOrigin.test(origin);
+    }
+    return false;
+  });
+  
+  if (isAllowed) {
     res.header('Access-Control-Allow-Origin', origin);
   }
   
@@ -65,7 +79,8 @@ app.use('/tasks', auth, tasksRouter);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
-  console.error(err.stack);
+  console.error('Error details:', err);
+  console.error('Error stack:', err.stack);
   res.status(err.status || 500).json({
     error: {
       message: err.message || 'Internal Server Error',
