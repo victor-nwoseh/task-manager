@@ -5,7 +5,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "init-db": "node db/init.js",
-    "start": "node server.js"
+    "init-render-db": "node scripts/init-render-db.js",
+    "start": "node scripts/init-render-db.js && node server.js",
+    "dev": "node server.js"
   },
   "keywords": [],
   "author": "",

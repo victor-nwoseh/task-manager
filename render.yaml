@@ -9,7 +9,7 @@ services:
     name: personal-task-manager-backend
     env: node
     plan: free
-    buildCommand: npm install
+    buildCommand: npm install && node scripts/build-and-init.js
     startCommand: npm start
     envVars:
       - key: NODE_ENV

@@ -28,7 +28,7 @@ This guide explains how to deploy the Personal Task Manager application to Rende
 3. Configure the service:
    - **Name**: `personal-task-manager-backend`
    - **Environment**: Node
-   - **Build Command**: `npm install`
+   - **Build Command**: `npm install && node scripts/build-and-init.js`
    - **Start Command**: `npm start`
    - **Plan**: Free
 4. Set environment variables:
@@ -38,13 +38,18 @@ This guide explains how to deploy the Personal Task Manager application to Rende
    - `PORT`: `10000`
 5. Click "Create Web Service"
 
-### 3. Initialize Database Schema
+### 3. Database Initialization (Automatic)
 
-After the backend is deployed:
-1. Go to your backend service in Render
-2. Open the "Shell" tab
-3. Run: `node scripts/init-render-db.js`
-4. Verify the tables are created successfully
+The database schema will be automatically initialized during the deployment process. You don't need shell access! The system will:
+
+1. **During Build**: Attempt to initialize the database if possible
+2. **During Startup**: Initialize the database if it wasn't done during build
+3. **Skip if exists**: Won't recreate tables if they already exist
+
+You can monitor the initialization process in the deployment logs. Look for messages like:
+- "Database schema initialized successfully" ✅
+- "Database tables already exist, skipping initialization" ✅
+- "Database will be initialized when the service starts" ⚠️ (normal during build)
 
 ### 4. Frontend Deployment
 
@@ -88,7 +93,13 @@ Both services will automatically redeploy when you push changes to your GitHub r
 ### Database Connection Issues
 - Verify the DATABASE_URL environment variable is correctly linked
 - Check that the database service is running
-- Ensure the database schema has been initialized
+- Check deployment logs for database initialization messages
+
+### Database Initialization Issues
+- The system tries to initialize during build and startup
+- If build-time initialization fails, it will retry during startup
+- Check logs for "Database schema initialized successfully"
+- Tables won't be recreated if they already exist
 
 ### CORS Issues
 - Verify the frontend URL is added to the CORS allowlist in `server.js`
@@ -104,6 +115,7 @@ Both services will automatically redeploy when you push changes to your GitHub r
 - Use Render's built-in logging to monitor application health
 - Set up alerts for service downtime
 - Monitor database usage and performance
+- Check logs for database initialization status
 
 ## Cost Considerations
 
@@ -112,4 +124,8 @@ Both services will automatically redeploy when you push changes to your GitHub r
   - 1GB storage for PostgreSQL
   - 100GB bandwidth
 - Services may spin down after 15 minutes of inactivity on free tier
-- Consider upgrading to paid plans for production use 
+- Consider upgrading to paid plans for production use
+
+## No Shell Access Required
+
+This deployment is designed to work entirely with Render's free tier without requiring shell access. Database initialization happens automatically during the deployment process. 
