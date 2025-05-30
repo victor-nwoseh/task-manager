@@ -57,11 +57,15 @@ You can monitor the initialization process in the deployment logs. Look for mess
 2. Connect your GitHub repository
 3. Configure the site:
    - **Name**: `personal-task-manager-frontend`
-   - **Build Command**: `cd frontend && npm install && npm run build`
+   - **Build Command**: `cd frontend && npm ci && npm run build`
    - **Publish Directory**: `frontend/dist`
 4. Set environment variables:
    - `NODE_ENV`: `production`
 5. Click "Create Static Site"
+
+**Note**: If the build fails with "vite: not found", try these alternative build commands:
+- `cd frontend && npm install --production=false && npm run build`
+- `cd frontend && npm install && npx vite build`
 
 ### 5. Update API Configuration
 
@@ -89,6 +93,13 @@ Update this URL to match your actual backend service URL from Render.
 Both services will automatically redeploy when you push changes to your GitHub repository's main branch.
 
 ## Troubleshooting
+
+### Frontend Build Issues
+- **"vite: not found" error**: Vite has been moved to dependencies, redeploy after pushing the updated package.json
+- **Build command alternatives**:
+  - `cd frontend && npm install --production=false && npm run build`
+  - `cd frontend && npm install && npx vite build`
+- **Clear build cache**: Try redeploying from scratch
 
 ### Database Connection Issues
 - Verify the DATABASE_URL environment variable is correctly linked
