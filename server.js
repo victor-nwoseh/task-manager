@@ -14,7 +14,7 @@ app.use(express.json());
 // Middleware for handling CORS
 app.use((req, res, next) => {
   const allowedOrigins = [
-    'https://personal-task-manager-frontend.onrender.com', // Updated Render frontend URL
+    'https://personal-task-manager-frontend.onrender.com', // Actual frontend URL
     'https://personal-task-manager-frontend-bikg.onrender.com', // Alternative pattern
     /^https:\/\/personal-task-manager-frontend.*\.onrender\.com$/, // Pattern for any Render frontend URL
     'http://localhost:5173'
@@ -35,6 +35,9 @@ app.use((req, res, next) => {
   
   if (isAllowed) {
     res.header('Access-Control-Allow-Origin', origin);
+    console.log('CORS: Origin allowed:', origin);
+  } else {
+    console.log('CORS: Origin not allowed:', origin);
   }
   
   // Add these headers

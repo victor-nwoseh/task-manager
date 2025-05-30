@@ -6,6 +6,18 @@ let pool;
 console.log('Database configuration - NODE_ENV:', process.env.NODE_ENV);
 console.log('Database configuration - DATABASE_URL exists:', !!process.env.DATABASE_URL);
 
+// Debug the DATABASE_URL format (safely)
+if (process.env.DATABASE_URL) {
+  const urlParts = process.env.DATABASE_URL.split('@');
+  if (urlParts.length > 1) {
+    const hostPart = urlParts[1].split('/')[0];
+    console.log('Database host part:', hostPart);
+  }
+  console.log('DATABASE_URL starts with:', process.env.DATABASE_URL.substring(0, 20) + '...');
+} else {
+  console.log('DATABASE_URL is not set!');
+}
+
 if (process.env.NODE_ENV === 'production') {
   // Production configuration
   pool = new Pool({
@@ -34,6 +46,18 @@ pool.connect((err, client, release) => {
   if (err) {
     console.error('Error acquiring database client:', err);
     console.error('DATABASE_URL format check:', process.env.DATABASE_URL ? 'URL exists' : 'URL missing');
+    
+    // Try to parse the URL manually to see what's wrong
+    if (process.env.DATABASE_URL) {
+      try {
+        const url = new URL(process.env.DATABASE_URL);
+        console.log('Parsed hostname:', url.hostname);
+        console.log('Parsed port:', url.port);
+        console.log('Parsed protocol:', url.protocol);
+      } catch (parseErr) {
+        console.error('Error parsing DATABASE_URL:', parseErr.message);
+      }
+    }
     return;
   }
   console.log('Successfully connected to database');
